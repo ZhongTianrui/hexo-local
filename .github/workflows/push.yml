@@ -37,14 +37,11 @@ jobs:
     - name: 安装依赖
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        npm install gulp-cli -g #全局安装gulp 如果你的博客不需要他 可以不装 节省时间
         npm install
     - name: 生成静态文件
       run: |
         hexo clean 
-        hexo bangumi -u #bilibili番剧更新 如果你的博客不需要他 请删除这一行
         hexo generate
-        gulp # 如果你的博客不需要他 请删除这一行
   
     - name: 部署
       run: |
@@ -55,13 +52,6 @@ jobs:
         # =====注意.deploy_git前面有个空格=====
         # 这行指令的目的是clone博客静态文件仓库，防止Hexo推送时覆盖整个静态文件仓库，而是只推送有更改的文件
         hexo deploy
-    - name: 发布npm包 # 不需要请删除这一部分
-      if: env.NPM_TOKEN && env.NPM_NAME
-      run: |
-        cd public
-        node index.js
-        npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-        npm publish
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         NPM_NAME: ${{ secrets.NPM_NAME }}
